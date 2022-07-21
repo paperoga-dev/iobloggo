@@ -73,7 +73,9 @@ def main():
             messages = data[itemKey]["messages"]
             messages.sort(key=lambda x: x["sequence"])
 
-            f.write("<html><head><title>%s</title></head><body><h1>%s</h1><br>posted on: %s<br><br><table border=\"0\"><tr><td colspan=\"2\">%s</td></tr>" % (data[itemKey]["title"], data[itemKey]["title"], data[itemKey]["timestamp_str"], data[itemKey]["content"].replace("<tick>", "'").replace("\\n", "")))
+            title = data[itemKey]["title"] if data[itemKey]["title"] else "No title"
+
+            f.write("<html><head><title>%s</title></head><body><h1>%s</h1><br>posted on: %s<br><br><table border=\"0\"><tr><td colspan=\"2\">%s</td></tr>" % (title, title, data[itemKey]["timestamp_str"], data[itemKey]["content"].replace("<tick>", "'").replace("\\n", "")))
             for message in messages:
                 f.write("<tr><td colspan=\"2\"><b>%s</b> wrote on %s:</td></tr><tr><td>&nbsp;</td><td>%s</td></tr>" % (message["user"], message["timestamp_str"], message["message"].replace("\\n", "")))
             f.write("</table></body></html>")
@@ -84,7 +86,8 @@ def main():
         f.write("<html><head><title>Table of content</title></head><body><table border=\"0\">")
 
         for item in toc:
-            f.write("<tr><td>%s</td><td><a href=\"%s\" target=\"_blank\">%s</a></td></tr>" % (item["timestamp_str"], item["file"], item["title"]))
+            title = item["title"] if item["title"] else "No title"
+            f.write("<tr><td>%s</td><td><a href=\"%s\" target=\"_blank\">%s</a></td></tr>" % (item["timestamp_str"], item["file"], title))
 
         f.write("</table></body></html>")
 
