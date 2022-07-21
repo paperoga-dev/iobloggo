@@ -23,7 +23,7 @@ def main():
                 lastLine += line
 
             if lastLine:
-                records.append(lastLine[1:-1].split('","'))
+                records.append(lastLine.strip()[1:-1].split('","'))
 
     data = {}
     for record in records:
@@ -50,7 +50,6 @@ def main():
                     "user": record[3],
                     "message": record[5]
                 })
-                lastValue = record[1]
             except Exception as e:
                 print("Error on ", record)
                 return
@@ -60,7 +59,15 @@ def main():
         rootPath = os.path.join("%02d" % data[itemKey]["timestamp"].year, "%02d" % data[itemKey]["timestamp"].month)
         os.makedirs(rootPath, exist_ok=True)
 
-        htmlFile = "%s.html" % os.path.join(rootPath, "%02d_%02d_%02d_%02d" % (data[itemKey]["timestamp"].day, data[itemKey]["timestamp"].hour, data[itemKey]["timestamp"].minute, data[itemKey]["timestamp"].second))
+        htmlFile = "%s.html" % os.path.join(
+            rootPath,
+            "%02d_%02d_%02d_%02d" % (
+                data[itemKey]["timestamp"].day,
+                data[itemKey]["timestamp"].hour,
+                data[itemKey]["timestamp"].minute,
+                data[itemKey]["timestamp"].second
+            )
+        )
 
         toc.append({
             "timestamp_str": data[itemKey]["timestamp_str"],
@@ -75,9 +82,22 @@ def main():
 
             title = data[itemKey]["title"] if data[itemKey]["title"] else "No title"
 
-            f.write("<html><head><title>%s</title></head><body><h1>%s</h1><br>posted on: %s<br><br><table border=\"0\"><tr><td colspan=\"2\">%s</td></tr>" % (title, title, data[itemKey]["timestamp_str"], data[itemKey]["content"].replace("<tick>", "'").replace("\\n", "")))
+            f.write(
+                "<html><head><title>%s</title></head><body><h1>%s</h1><br>posted on: %s<br><br><table border=\"0\"><tr><td colspan=\"2\">%s</td></tr>" % (
+                    title,
+                    title,
+                    data[itemKey]["timestamp_str"],
+                    data[itemKey]["content"].replace("<tick>", "'").replace("\\n", "")
+                )
+            )
             for message in messages:
-                f.write("<tr><td colspan=\"2\"><b>%s</b> wrote on %s:</td></tr><tr><td>&nbsp;</td><td>%s</td></tr>" % (message["user"], message["timestamp_str"], message["message"].replace("\\n", "")))
+                f.write(
+                    "<tr><td colspan=\"2\"><b>%s</b> wrote on %s:</td></tr><tr><td>&nbsp;</td><td>%s</td></tr>" % (
+                        message["user"],
+                        message["timestamp_str"],
+                        message["message"].replace("\\n", "")
+                    )
+                )
             f.write("</table></body></html>")
 
     toc.sort(key=lambda x: x["timestamp"])
@@ -87,7 +107,13 @@ def main():
 
         for item in toc:
             title = item["title"] if item["title"] else "No title"
-            f.write("<tr><td>%s</td><td><a href=\"%s\" target=\"_blank\">%s</a></td></tr>" % (item["timestamp_str"], item["file"], title))
+            f.write(
+                "<tr><td>%s</td><td><a href=\"%s\" target=\"_blank\">%s</a></td></tr>" % (
+                    item["timestamp_str"],
+                    item["file"],
+                    title
+                )
+            )
 
         f.write("</table></body></html>")
 
