@@ -76,7 +76,7 @@ def main():
             "file": htmlFile
         })
 
-        with open(htmlFile, "w") as f:
+        with open(htmlFile, "w", encoding="utf-8") as f:
             messages = data[itemKey]["messages"]
             messages.sort(key=lambda x: x["sequence"])
 
@@ -102,7 +102,7 @@ def main():
 
     toc.sort(key=lambda x: x["timestamp"])
 
-    with open("toc.html", "w") as f:
+    with open("toc.html", "w", encoding="utf-8") as f:
         f.write("<html><head><title>Table of content</title></head><body><table border=\"0\">")
 
         for item in toc:
